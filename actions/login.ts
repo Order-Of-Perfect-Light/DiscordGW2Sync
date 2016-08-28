@@ -7,7 +7,7 @@ import * as discord from '../discord';
 export function login(message, content) {
 	var gw2User = content.replace(/^login /, '');
 	gw2.getMembers().then((memberList) => {
-		var user = _.filter(memberList, (item) => item.name === gw2User);
+		var user = _.filter(memberList, (item: any) => item.name === gw2User);
 		if(user.length !== 1) {
 			discord.bot.reply(message, 'Quaggan doesn\'t recognize youuuUUUuuu');
 		} else {
@@ -15,7 +15,7 @@ export function login(message, content) {
 			discord.bot.reply(message, 'Quaggan thinks that youuuUUUuuu should deposit ' + copper + ' copper coins to the guild stash soooOOOoooon');
 			return waitForCopper(gw2User, copper)
 				.then(() => db.get('SELECT id FROM userList WHERE discordUser = ?', [message.author.id]))
-				.then((rows) => {
+				.then((rows: any[]) => {
 					if (rows.length == 0) {
 						return db.run('INSERT INTO userList (discordUser, gw2User) VALUES (?, ?)', [message.author.id, gw2User])
 					} else {
@@ -37,8 +37,8 @@ export function login(message, content) {
 }
 
 function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, maxLoops = 60 * 5) {
-	return gw2.getLog().then((data) => {
-		data = _.filter(data, (o) => (
+	return gw2.getLog().then((data: any[]) => {
+		data = _.filter(data, (o: any) => (
 			o.type === 'stash' &&
 			o.operation === 'deposit' &&
 			o.user === gw2User &&

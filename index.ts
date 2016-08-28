@@ -1,10 +1,11 @@
+/// <reference path="node_modules/@types/es6-promise/index.d.ts"/>
 var discord: any = require('discord.js');
+
 import * as yargs from 'yargs';
 import * as _ from 'lodash';
 import * as path from 'path';
 
 import * as db from './db';
-import * as discord from './discord';
 import * as gw2 from './gw2';
 import {login} from './actions/login';
 import {updatePermissions} from './actions/updatePermissions';
@@ -54,7 +55,7 @@ gw2.init(args.apiKey, args.guildNumber);
 discord.init(args.displayName);
 
 discord.bot.on('message', function(message) {
-	var filtered = _.filter(message.mentions, (e) => e.username === args.displayName);
+	var filtered: any[] = _.filter(message.mentions, (e: any) => e.username === args.displayName);
 	if((!message.channel.name || filtered.length > 0) && message.author.username !== args.displayName) {
 		var content = message.content;
 		if(filtered.length > 0) {

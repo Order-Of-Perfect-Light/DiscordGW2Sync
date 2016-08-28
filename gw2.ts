@@ -11,7 +11,7 @@ const log = '/log';
 
 export function init(apiKey: string, guildNumber: number) {
 	key = apiKey;
-	getRequest(baseUrl + account).then((result) => {
+	getRequest(baseUrl + account).then((result: any) => {
 		guildId = result.guilds[guildNumber];
 	}).catch((e) => {
 		console.error('Could not fetch guild list!', e);

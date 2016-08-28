@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
-import * as process from 'process';
-import * as discord from 'discord.js';
+
+const process: any = require('process');
+const discord: any = require('discord.js');
 
 import * as db from './db';
 
@@ -44,18 +45,16 @@ export function processGw2Members(members) {
 	var server = bot.servers[0];
 	return db.get('SELECT gw2User, discordUser FROM userList', []).then((rows) => {
 		for(var i in rows) {
-			var gw2User = _.filter(members, (m) => m.name === rows[i].gw2User);
+			var gw2User: any[] = _.filter(members, (m: any) => m.name === rows[i].gw2User);
 			if (gw2User.length > 0) {
 				var userRoles = server.rolesOfUser(rows[i].discordUser);
-				var addRole = _.filter(server.roles, (r) => r.name === gw2User[0].rank);
+				var addRole = _.filter(server.roles, (r: any) => r.name === gw2User[0].rank);
 
 				const discordId = rows[i].discordUser;
 				const rank = gw2User[0].rank;
 
 				for (var j in userRoles) {
-					console.log('here', gw2User.name, userRoles[j].name, rank, ranks, _.includes(ranks, userRoles[j].name), userRoles[j].name !== rank)
 					if (_.includes(ranks, userRoles[j].name) && userRoles[j].name !== rank) {
-						console.log('removing')
 						var roleName = userRoles[j].name;
 						bot.removeMemberFromRole(rows[i].discordUser, userRoles[j], (err) => {
 							if(err && err.response.statusCode) {
