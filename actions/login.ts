@@ -39,19 +39,21 @@ export function login(message, content) {
 function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, maxLoops = 6 * 5) {
 	console.log('Looking for', gw2User, 'to deposit', copper, 'copper after', startDate);
 	return gw2.getLog().then((baseData: any[]) => {
-		const data = _.filter(baseData, (o: any) => (
+		const userActions = _.filter(baseData, (o: any) => (
+			o.user === gw2User
+		));
+		const data = _.filter(userActions, (o: any) => (
 			o.type === 'stash' &&
 			o.operation === 'deposit' &&
-			o.user === gw2User &&
 			o.item_id === 0 &&
 			o.count === 0 &&
 			o.coins === copper &&
 			new Date(o.time) > startDate
 		));
 		console.log('Filtered Result', data);
-		console.log('User Actions', _.filter(baseData, (o: any) => (
-			o.user === gw2User
-		)));
+		console.log('User Actions', userActions.slice(0, 5));
+		const likelyTime = new Date(userActions[0].time);
+		console.log('Likely Candidate', userActions[0], likelyTime, likelyTime > startDate);
 		console.log('First 5 actions', baseData.slice(0, 5));
 		if(data.length === 0) {
 			if(count < maxLoops) {
