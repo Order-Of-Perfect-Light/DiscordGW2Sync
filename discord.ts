@@ -11,7 +11,7 @@ let server;
 var logout = true;
 function exitHandler(options, err) {
 	if(err) {
-		console.error('Aborting due to an uncaught exception!', e.stack || e);
+		console.error('Aborting due to an uncaught exception!', err.stack || err);
 	}
 	if(logout) {
 		logout = false;
