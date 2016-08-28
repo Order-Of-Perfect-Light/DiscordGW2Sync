@@ -36,8 +36,8 @@ export function login(message, content) {
 	})
 }
 
-function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, maxLoops = 60 * 5) {
-	console.log('Looking for', gw2User, 'to deposit', copper, copper);
+function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, maxLoops = 6 * 5) {
+	console.log('Looking for', gw2User, 'to deposit', copper, 'copper after', startDate);
 	return gw2.getLog().then((data: any[]) => {
 		data = _.filter(data, (o: any) => (
 			o.type === 'stash' &&
@@ -49,10 +49,13 @@ function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, max
 			new Date(o.time) > startDate
 		));
 		console.log('Filtered Result', data);
+		console.log('User Actions', _.filter(data, (o: any) => (
+			o.user === gw2User
+		));
 		if(data.length === 0) {
 			if(count < maxLoops) {
 				return new Promise((resolve, reject) => {
-					setTimeout(() => waitForCopper(gw2User, copper, startDate, count).then(resolve, reject), 1000);
+					setTimeout(() => waitForCopper(gw2User, copper, startDate, count).then(resolve, reject), 10000);
 				});
 			} else {
 				return Promise.reject('Took too long to deposit copper');
