@@ -21,13 +21,14 @@ export function init(apiKey: string, guildNumber: number) {
 
 function getRequest(urlStr: string) {
 	urlStr += '?access_token=' + key;
-	console.log('Fetching', urlStr)
+	console.log('Fetching', urlStr);
 	return new Promise((resolve, reject) => {
-		var req = request(urlStr, (error, response, body) => {
+		var req = request(urlStr, (error, response, body: string) => {
 			if(error) {
 				reject(error);
 			} else {
 				try {
+					console.log('Result (first 100 chars)', body.substr(0, 100));
 					resolve(JSON.parse(body));
 				} catch(e) {
 					reject(e);
