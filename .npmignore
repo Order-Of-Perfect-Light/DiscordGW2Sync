@@ -1,0 +1,7 @@
+node_modules/
+typings/
+*.ts
+!*.d.ts
+.*
+npm-debug.log
+Dockerfile
