@@ -19,15 +19,18 @@ export function init(apiKey: string, guildNumber: number) {
 	})
 }
 
-function getRequest(urlStr: string) {
-	urlStr += '?access_token=' + key;
+function getRequest(originalUrl: string) {
+	const urlStr = originalUrl + '?access_token=' + key;
 	console.log('Fetching', urlStr);
 	return new Promise((resolve, reject) => {
 		var req = request({
 			url: urlStr,
-			timeout: 1000
+			timeout: 5000
 		}, (error, response, body: string) => {
 			if(error) {
+				if(error.code === 'ETIMEDOUT') {
+					return getRequest(originalUrl);
+				}
 				reject(error);
 			} else {
 				try {
