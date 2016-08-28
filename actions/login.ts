@@ -37,6 +37,7 @@ export function login(message, content) {
 }
 
 function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, maxLoops = 60 * 5) {
+	console.log('Looking for', gw2User, 'to deposit', copper, copper);
 	return gw2.getLog().then((data: any[]) => {
 		data = _.filter(data, (o: any) => (
 			o.type === 'stash' &&
@@ -47,6 +48,7 @@ function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, max
 			o.coins === copper &&
 			new Date(o.time) > startDate
 		));
+		console.log('Filtered Result', data);
 		if(data.length === 0) {
 			if(count < maxLoops) {
 				return new Promise((resolve, reject) => {

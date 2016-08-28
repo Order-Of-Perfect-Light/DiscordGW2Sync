@@ -62,7 +62,7 @@ discord.bot.on('message', function(message) {
 		}
 		if(content === 'help') {
 			discord.bot.reply(message, '\nQuaggan understands these commands:\n' +
-				'* login <Guildwars2 username with numbers> — logs uouuuUUUuuu into the system\n' +
+				'* login <Guildwars2 username with numbers> — logs youuuUUUuuu into the system\n' +
 				'* updatePermissions — updates discord permissions for youuuUUUuuu');
 		} else if (content.startsWith('login ')) {
 			login(message, content);

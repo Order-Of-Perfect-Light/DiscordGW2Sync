@@ -11,4 +11,4 @@ RUN rmdir package
 RUN mkdir /app/data
 RUN npm --loglevel=warn install
 
-ENTRYPOINT ['node', '/app']
+ENTRYPOINT node /app
