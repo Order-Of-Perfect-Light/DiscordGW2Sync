@@ -1,0 +1,7 @@
+*.js
+*.js.map
+*.d.ts
+node_modules
+.idea/workspace.xml
+.idea/deployment.xml
+data
