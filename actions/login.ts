@@ -51,7 +51,7 @@ function waitForCopper(gw2User, copper, startDate = (new Date()), count = 0, max
 		console.log('Filtered Result', data);
 		console.log('User Actions', _.filter(data, (o: any) => (
 			o.user === gw2User
-		));
+		)));
 		if(data.length === 0) {
 			if(count < maxLoops) {
 				return new Promise((resolve, reject) => {
