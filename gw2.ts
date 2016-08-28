@@ -13,6 +13,7 @@ export function init(apiKey: string, guildNumber: number) {
 	key = apiKey;
 	getRequest(baseUrl + account).then((result: any) => {
 		guildId = result.guilds[guildNumber];
+		console.log('GW2 Initialized with guild id', guildId)
 	}).catch((e) => {
 		console.error('Could not fetch guild list!', e);
 	})
@@ -20,6 +21,7 @@ export function init(apiKey: string, guildNumber: number) {
 
 function getRequest(urlStr: string) {
 	urlStr += '?access_token=' + key;
+	console.log('Fetching', urlStr)
 	return new Promise((resolve, reject) => {
 		var req = request(urlStr, (error, response, body) => {
 			if(error) {
