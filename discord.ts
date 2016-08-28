@@ -32,18 +32,23 @@ process.on('SIGINT', exitHandler.bind(null, {exit:true}));
 //catches uncaught exceptions
 process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
+var initialize = true;
+
 export function init(displayName: string) {
 	bot.on('ready', function() {
-		bot.setStatusIdle();
-		Promise.all([
-			bot.setUsername(displayName)
-				.catch((e) => console.error('Set Username Fail!', e && e.stack || e)),
-			bot.setPlayingGame('CoooOOOooOOOoo Beep Boop CoooooOOOOoooOOOoo')
-				.catch((e) => console.error('Set Playing Fail!', e && e.stack || e))
-		]).then((e) =>
-			bot.setStatusActive()
-				.catch((e) => console.error('Set Active Fail!', e && e.stack || e))
-		).then(() => console.log('Discord init complete'));
+		if(initialize) {
+			initialize = false;
+			bot.setStatusIdle();
+			Promise.all([
+				bot.setUsername(displayName)
+					.catch((e) => console.error('Set Username Fail!', e && e.stack || e)),
+				bot.setPlayingGame('CoooOOOooOOOoo Beep Boop CoooooOOOOoooOOOoo')
+					.catch((e) => console.error('Set Playing Fail!', e && e.stack || e))
+			]).then((e) =>
+				bot.setStatusActive()
+					.catch((e) => console.error('Set Active Fail!', e && e.stack || e))
+			).then(() => console.log('Discord init complete'));
+		}
 	});
 }
 
