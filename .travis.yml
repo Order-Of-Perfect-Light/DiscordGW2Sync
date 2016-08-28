@@ -1,0 +1,13 @@
+sudo: required
+
+language: node:5
+
+services:
+  - docker
+
+script:
+  - npm --loglevel=warn --unsafe-perm install
+  - npm pack . --unsafe-perm
+  - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD --email $DOCKER_EMAIL registry.gitlab.com
+  - docker build --no-cache -t orderofperfectlight/discord-gw2-sync:latest .
+  - docker push orderofperfectlight/discord-gw2-sync:latest
