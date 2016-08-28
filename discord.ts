@@ -6,6 +6,7 @@ const discord: any = require('discord.js');
 import * as db from './db';
 
 export const bot = new discord.Client();
+bot.setStatusIdle()
 let server;
 
 var logout = true;
@@ -34,12 +35,15 @@ process.on('uncaughtException', exitHandler.bind(null, {exit:true}));
 
 export function init(displayName: string) {
 	bot.on('ready', function() {
-		bot.setUsername(displayName)
-			.catch((e) => console.error('Set Username Fail!', e && e.stack || e));
-		bot.setPlayingGame('CoooOOOooOOOoo Beep Boop CoooooOOOOoooOOOoo')
-			.catch((e) => console.error('Set Playing Fail!', e && e.stack || e));
-		bot.setStatusIdle()
-			.catch((e) => console.error('Set Idle Fail!', e && e.stack || e));
+		Promise.all([
+			bot.setUsername(displayName)
+				.catch((e) => console.error('Set Username Fail!', e && e.stack || e)),
+			bot.setPlayingGame('CoooOOOooOOOoo Beep Boop CoooooOOOOoooOOOoo')
+				.catch((e) => console.error('Set Playing Fail!', e && e.stack || e))
+		]).then((e) =>
+			bot.setStatusActive()
+				.catch((e) => console.error('Set Idle Fail!', e && e.stack || e))
+		).then(() => console.log('Discord init complete'));
 	});
 }
 

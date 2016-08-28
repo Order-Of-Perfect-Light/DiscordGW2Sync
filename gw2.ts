@@ -23,7 +23,10 @@ function getRequest(urlStr: string) {
 	urlStr += '?access_token=' + key;
 	console.log('Fetching', urlStr);
 	return new Promise((resolve, reject) => {
-		var req = request(urlStr, (error, response, body: string) => {
+		var req = request({
+			url: urlStr,
+			timeout: 1000
+		}, (error, response, body: string) => {
 			if(error) {
 				reject(error);
 			} else {
