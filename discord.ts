@@ -101,11 +101,11 @@ export function processGw2Members(members) {
 						if (err && err.response.statusCode) {
 							console.error('Failed to add', discordId, 'to', rank, err.response.text);
 						}
-					});
-					bot.addMemberToRole(rows[i].discordUser, verifiedRole, (err) => {
-						if (err && err.response.statusCode) {
-							console.error('Failed to add', discordId, 'to verified', err.response.text);
-						}
+						bot.addMemberToRole(rows[i].discordUser, verifiedRole, (err) => {
+							if (err && err.response.statusCode) {
+								console.error('Failed to add', discordId, 'to verified', err.response.text);
+							}
+						});
 					});
 				}
 			}
