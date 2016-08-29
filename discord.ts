@@ -85,7 +85,6 @@ export function processGw2Members(members) {
 				const discordId = rows[i].discordUser;
 				const rank = gw2User[0].rank;
 
-				console.log('Role List:', userRoles);
 				for (var j in userRoles) {
 					if (
 						_.includes(ranks, userRoles[j].name) && userRoles[j].name !== rank &&
@@ -102,12 +101,12 @@ export function processGw2Members(members) {
 				}
 
 				if(rank) {
-					console.log('Adding', rank, 'to', discordId);
+					console.log('Adding', rank, 'to', discordId, 'for', gw2User);
 					bot.addMemberToRole(rows[i].discordUser, addRole, (err) => {
 						if (err && err.response.statusCode) {
 							console.error('Failed to add', discordId, 'to', rank, err.response.text);
 						}
-						console.log('Adding verified to', discordId);
+						console.log('Adding verified to', discordId, 'for', gw2User);
 						bot.addMemberToRole(rows[i].discordUser, verifiedRole, (err) => {
 							if (err && err.response.statusCode) {
 								console.error('Failed to add', discordId, 'to verified', err.response.text);
