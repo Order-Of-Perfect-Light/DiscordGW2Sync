@@ -56,6 +56,7 @@ discord.init(args.displayName);
 discord.bot.on('message', function(message) {
 	var filtered: any[] = _.filter(message.mentions, (e: any) => e.username === args.displayName);
 	if((!message.channel.name || filtered.length > 0) && message.author.username !== args.displayName) {
+		console.log('Recieved message: ', message.content);
 		var content = message.content;
 		if(filtered.length > 0) {
 			var content = content.replace('<@' + filtered[0].id + '>', '').trim();
