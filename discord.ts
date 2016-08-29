@@ -88,6 +88,7 @@ export function processGw2Members(members) {
 						(userRoles[j].name !== 'Verified' || !rank)
 					) {
 						var roleName = userRoles[j].name;
+						console.log('Removing', roleName, 'from', discordId);
 						bot.removeMemberFromRole(rows[i].discordUser, userRoles[j], (err) => {
 							if(err && err.response.statusCode) {
 								console.error('Failed to remove', discordId , 'from', roleName, err.response.text);
@@ -97,10 +98,12 @@ export function processGw2Members(members) {
 				}
 
 				if(rank) {
+					console.log('Adding', rank, 'to', discordId);
 					bot.addMemberToRole(rows[i].discordUser, addRole, (err) => {
 						if (err && err.response.statusCode) {
 							console.error('Failed to add', discordId, 'to', rank, err.response.text);
 						}
+						console.log('Adding verified to', discordId);
 						bot.addMemberToRole(rows[i].discordUser, verifiedRole, (err) => {
 							if (err && err.response.statusCode) {
 								console.error('Failed to add', discordId, 'to verified', err.response.text);
