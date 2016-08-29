@@ -69,6 +69,7 @@ export function init(displayName: string) {
 
 export function processGw2Members(members) {
 	var ranks = _(members).map('rank').sort().uniq().value();
+	ranks.push('Verified');
 	var server = bot.servers[0];
 	return db.get('SELECT gw2User, discordUser FROM userList', []).then((rows) => {
 		for(var i in rows) {
@@ -76,12 +77,16 @@ export function processGw2Members(members) {
 			if (gw2User.length > 0) {
 				var userRoles = server.rolesOfUser(rows[i].discordUser);
 				var addRole = _.filter(server.roles, (r: any) => r.name === gw2User[0].rank);
+				var verifiedRole = _.filter(server.roles, (r: any) => r.name === 'Verified');
 
 				const discordId = rows[i].discordUser;
 				const rank = gw2User[0].rank;
 
 				for (var j in userRoles) {
-					if (_.includes(ranks, userRoles[j].name) && userRoles[j].name !== rank) {
+					if (
+						_.includes(ranks, userRoles[j].name) && userRoles[j].name !== rank &&
+						(userRoles[j].name !== 'Verified' || !rank)
+					) {
 						var roleName = userRoles[j].name;
 						bot.removeMemberFromRole(rows[i].discordUser, userRoles[j], (err) => {
 							if(err && err.response.statusCode) {
@@ -91,11 +96,18 @@ export function processGw2Members(members) {
 					}
 				}
 
-				bot.addMemberToRole(rows[i].discordUser, addRole, (err) => {
-					if(err && err.response.statusCode) {
-						console.error('Failed to add', discordId , 'to', rank, err.response.text);
-					}
-				});
+				if(rank) {
+					bot.addMemberToRole(rows[i].discordUser, addRole, (err) => {
+						if (err && err.response.statusCode) {
+							console.error('Failed to add', discordId, 'to', rank, err.response.text);
+						}
+					});
+					bot.addMemberToRole(rows[i].discordUser, verifiedRole, (err) => {
+						if (err && err.response.statusCode) {
+							console.error('Failed to add', discordId, 'to verified', err.response.text);
+						}
+					});
+				}
 			}
 		}
 	});
