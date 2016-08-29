@@ -71,10 +71,13 @@ export function processGw2Members(members) {
 	var ranks = _(members).map('rank').sort().uniq().value();
 	ranks.push('Verified');
 	var server = bot.servers[0];
+	console.log('Getting users');
 	return db.get('SELECT gw2User, discordUser FROM userList', []).then((rows) => {
+		console.log('User List: ', rows);
 		for(var i in rows) {
 			var gw2User: any[] = _.filter(members, (m: any) => m.name === rows[i].gw2User);
 			if (gw2User.length > 0) {
+				console.log('Gw2User:', gw2User);
 				var userRoles = server.rolesOfUser(rows[i].discordUser);
 				var addRole = _.filter(server.roles, (r: any) => r.name === gw2User[0].rank);
 				var verifiedRole = _.filter(server.roles, (r: any) => r.name === 'Verified');
@@ -82,6 +85,7 @@ export function processGw2Members(members) {
 				const discordId = rows[i].discordUser;
 				const rank = gw2User[0].rank;
 
+				console.log('Role List:', userRoles);
 				for (var j in userRoles) {
 					if (
 						_.includes(ranks, userRoles[j].name) && userRoles[j].name !== rank &&
