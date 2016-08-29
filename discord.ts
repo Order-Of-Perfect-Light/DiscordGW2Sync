@@ -1,4 +1,6 @@
 import * as _ from 'lodash';
+import * as motdPull from './timedActions/motdPull';
+import * as upgradesPull from './timedActions/upgradesPull';
 
 const process: any = require('process');
 const discord: any = require('discord.js');
@@ -6,6 +8,8 @@ const discord: any = require('discord.js');
 import * as db from './db';
 
 export const bot = new discord.Client();
+
+let officialChannel;
 let server;
 
 var logout = true;
@@ -39,15 +43,26 @@ export function init(displayName: string) {
 		if(initialize) {
 			initialize = false;
 			bot.setStatusIdle();
+
+			officialChannel = _.filter(bot.servers[0].channels, (c: any) => (
+				c.name === 'official' &&
+				c.type === 'text'
+			))[0];
+
+			motdPull.start();
+			upgradesPull.start();
+
 			Promise.all([
 				bot.setUsername(displayName)
 					.catch((e) => console.error('Set Username Fail!', e && e.stack || e)),
 				bot.setPlayingGame('CoooOOOooOOOoo Beep Boop CoooooOOOOoooOOOoo')
 					.catch((e) => console.error('Set Playing Fail!', e && e.stack || e))
-			]).then((e) =>
+			]).then(() =>
 				bot.setStatusActive()
 					.catch((e) => console.error('Set Active Fail!', e && e.stack || e))
-			).then(() => console.log('Discord init complete'));
+			).then(() => {
+				console.log('Discord init complete')
+			});
 		}
 	});
 }
@@ -82,6 +97,17 @@ export function processGw2Members(members) {
 					}
 				});
 			}
+		}
+	});
+}
+
+export function getMessage(title) {
+	return officialChannel.getLogs().then((messages: any) => {
+		const resultMessage = _.filter(messages, (m: any) => m.content.startsWith('**' + title + '**'))
+		if(resultMessage.length > 0) {
+			return resultMessage[0];
+		} else {
+			return Promise.reject('Failed to find MOTD');
 		}
 	});
 }
