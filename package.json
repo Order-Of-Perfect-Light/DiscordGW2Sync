@@ -17,6 +17,7 @@
   "dependencies": {
     "discord.js": "^8.1.0",
     "lodash": "^4.15.0",
+    "random-org": "^0.1.5",
     "request": "^2.74.0",
     "sqlite3": "^3.1.4",
     "yargs": "^5.0.0"

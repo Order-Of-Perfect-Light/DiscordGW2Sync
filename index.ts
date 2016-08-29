@@ -8,6 +8,7 @@ import * as gw2 from './gw2';
 import * as discord from './discord';
 import {login} from './actions/login';
 import {updatePermissions} from './actions/updatePermissions';
+import {roll} from './actions/roll';
 
 var args: {
 	email: string,
@@ -15,7 +16,8 @@ var args: {
 	apiKey: string,
 	displayName: string,
 	dataDirectory: string,
-	guildNumber: number
+	guildNumber: number,
+	randomKey: string
 } = yargs.options({
 	email: {
 		describe: 'The discord email',
@@ -42,6 +44,11 @@ var args: {
 		type: 'number',
 		required: true
 	},
+	randomKey: {
+		describe: 'The api key for random.org',
+		type: 'string',
+		required: true
+	},
 	dataDirectory: {
 		describe: 'The directory to store stuff in',
 		type: 'string',
@@ -62,13 +69,19 @@ discord.bot.on('message', function(message) {
 			var content = content.replace('<@' + filtered[0].id + '>', '').trim();
 		}
 		if(content === 'help') {
-			discord.bot.reply(message, '\nQuaggan understands these commands:\n' +
+			discord.bot.reply(
+				message,
+				'\nQuaggan understands these commands:\n' +
 				'* login <Guildwars2 username with numbers> — logs youuuUUUuuu into the system\n' +
-				'* updatePermissions — updates discord permissions for youuuUUUuuu');
+				'* updatePermissions — updates discord permissions for youuuUUUuuu\n' +
+				'* roll <number> <sides> <sort> — Roll a number of dice (uses random.org). The last argument should be either true or false, defaults to true'
+			);
 		} else if (content.startsWith('login ')) {
 			login(message, content);
 		} else if (content === 'updatePermissions') {
 			updatePermissions(message, content);
+		} else if (content.startsWith('roll ')) {
+			roll(message, content, args.randomKey);
 		} else {
 			discord.bot.reply(message, 'Quaggan does not understand.... CoooOOOOoooooo');
 		}

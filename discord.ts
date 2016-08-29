@@ -122,7 +122,8 @@ export function processGw2Members(members) {
 
 export function getMessage(title) {
 	return officialChannel.getLogs().then((messages: any) => {
-		const resultMessage = _.filter(messages, (m: any) => m.content.startsWith('**' + title + '**'))
+		const resultMessage: any = _.filter(messages, (m: any) => m.content.startsWith('**' + title + '**'));
+		console.log(resultMessage.author.id, server.user);
 		if(resultMessage.length > 0) {
 			return resultMessage[0];
 		} else {
