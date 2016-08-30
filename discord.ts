@@ -131,11 +131,11 @@ function initBot(bot: any, randomKey: string, displayName: string, email: string
 		console.log('error recieved', message);
 	});
 
-	discord.bot.on('disconnected', function(m) {
+	bot.on('disconnected', function(m) {
 		console.log('disconnected!', m);
 	});
 
-	discord.bot.on('connected', function(m) {
+	bot.on('connected', function(m) {
 		console.log('connected!', m);
 	});
 
