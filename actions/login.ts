@@ -4,15 +4,15 @@ import * as db from '../db';
 import * as gw2 from '../gw2';
 import * as discord from '../discord';
 
-export function login(message, content) {
+export function login(bot: any, message, content) {
 	var gw2User = content.replace(/^login /, '');
 	gw2.getMembers().then((memberList) => {
 		var user = _.filter(memberList, (item: any) => item.name === gw2User);
 		if(user.length !== 1) {
-			discord.bot.reply(message, 'Quaggan doesn\'t recognize youuuUUUuuu');
+			bot.reply(message, 'Quaggan doesn\'t recognize youuuUUUuuu');
 		} else {
 			var copper = Math.floor(Math.random() * 50);
-			discord.bot.reply(message, 'Quaggan thinks that youuuUUUuuu should deposit ' + copper + ' copper coins to the guild stash soooOOOoooon');
+			bot.reply(message, 'Quaggan thinks that youuuUUUuuu should deposit ' + copper + ' copper coins to the guild stash soooOOOoooon');
 			return waitForCopper(gw2User, copper)
 				.then(() => db.get('SELECT id FROM userList WHERE discordUser = ?', [message.author.id]))
 				.then((rows: any[]) => {
@@ -22,12 +22,12 @@ export function login(message, content) {
 						return db.run('UPDATE userList SET gw2User = ? WHERE id = ?', [gw2User, rows[0].id])
 					}
 				}).then(() => {
-					discord.processGw2Members(memberList);
-					discord.bot.reply(message, 'YouuuUUUuuu are logged in!');
+					discord.processGw2Members(bot, memberList);
+					bot.reply(message, 'YouuuUUUuuu are logged in!');
 				});
 		}
 	}).catch((err) => {
-		discord.bot.reply(message, 'Quaggan could not log youuuUUUuuu in. Quaggan is sorry!');
+		bot.reply(message, 'Quaggan could not log youuuUUUuuu in. Quaggan is sorry!');
 		console.log('Failed to login!', {
 			discordId: message.author.id,
 			gw2User: gw2User,

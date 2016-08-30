@@ -27,7 +27,7 @@ function leftPad(str, pad, len) {
 export function start() {
 	startCount++;
 	if (startCount === 2) {
-		discord.getMessage(title).then((channel: any) => {
+		discord.getMessage(discord.discordConnections[0], title).then((channel: any) => {
 			upgradesMessage = channel;
 			run();
 			setInterval(run, 1000 * 60 * 60);

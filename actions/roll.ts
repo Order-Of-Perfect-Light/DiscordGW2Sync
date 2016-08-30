@@ -1,15 +1,13 @@
 const RandomOrg = require('random-org');
 import * as _ from 'lodash';
 
-import * as discord from '../discord';
-
 var random;
 
 function sortNumber(a,b) {
 	return a - b;
 }
 
-export function roll(message, content, randomKey) {
+export function roll(bot: any, message, content, randomKey) {
 	if(!random) {
 		random = new RandomOrg({ apiKey: randomKey });
 	}
@@ -26,13 +24,13 @@ export function roll(message, content, randomKey) {
 						final.push(i + 'x' + rollData[i].length);
 					}
 				}
-				discord.bot.reply(message, final.join(', '));
+				bot.reply(message, final.join(', '));
 			} else {
-				discord.bot.reply(message, result.random.data.join(', '));
+				bot.reply(message, result.random.data.join(', '));
 			}
 		})
 		.catch((e) => {
 			console.error('Failed to roll numbers', e);
-			discord.bot.reply(message, 'Quaggan failed, Quaggan is sorry!');
+			bot.reply(message, 'Quaggan failed, Quaggan is sorry!');
 		});
 }
