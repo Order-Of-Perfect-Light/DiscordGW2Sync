@@ -96,8 +96,12 @@ discord.bot.on('error', function(message) {
 	console.log('error recieved', message);
 });
 
-discord.bot.on('disconnected', function() {
-	console.log('disconnected!');
+discord.bot.on('disconnected', function(m) {
+	console.log('disconnected!', m);
+});
+
+discord.bot.on('connected', function(m) {
+	console.log('connected!', m);
 });
 
 console.log('Logging In...');
