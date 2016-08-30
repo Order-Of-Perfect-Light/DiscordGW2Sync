@@ -31,7 +31,7 @@ export function start() {
 			upgradesMessage = channel;
 			run();
 			setInterval(run, 1000 * 60 * 60);
-		}).catch(() => console.error('Failed to find ' + title));
+		}).catch((e) => console.error('Failed to find ' + title, e));
 		/*upgradesList = gw2.getUpgradeList().then((data: number[]) => {
 		 const promises: Promise<any[]>[] = [];
 		 const batchSize = Math.ceil(data.length / 6);

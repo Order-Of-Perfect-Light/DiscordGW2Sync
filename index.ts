@@ -88,6 +88,18 @@ discord.bot.on('message', function(message) {
 	}
 });
 
+discord.bot.on('warn', function(message) {
+	console.log('warning recieved', message);
+});
+
+discord.bot.on('error', function(message) {
+	console.log('error recieved', message);
+});
+
+discord.bot.on('disconnected', function(message) {
+	console.log('disconnected!', message);
+});
+
 console.log('Logging In...');
 discord.bot.login(args.email, args.password)
 	.then(
