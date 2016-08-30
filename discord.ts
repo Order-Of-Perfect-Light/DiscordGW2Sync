@@ -120,6 +120,8 @@ export function processGw2Members(members) {
 }
 
 export function getMessage(title) {
+	var server = bot.servers[0];
+
 	return officialChannel.getLogs().then((messages: any) => {
 		const resultMessage: any = _.filter(messages, (m: any) => m.content.startsWith('**' + title + '**'));
 		console.log(resultMessage.author && resultMessage.author.id, server.user);
