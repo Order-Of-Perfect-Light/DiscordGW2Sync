@@ -14,7 +14,7 @@ export function start() {
 			motdMessage = channel;
 			run();
 			setInterval(run, 1000 * 60 * 60);
-		}).catch((e) => console.error('Failed to find MOTD', e));
+		}).catch((e) => console.error('Failed to find MOTD', e && e.stack || e));
 	}
 }
 
