@@ -1,4 +1,4 @@
-FROM node:4.5
+FROM node:6.5
 
 ARG TAG
 
