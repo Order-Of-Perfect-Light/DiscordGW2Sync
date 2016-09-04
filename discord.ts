@@ -150,46 +150,39 @@ export function processGw2Members(bot: any, members) {
 	console.log('Getting users');
 	return db.get('SELECT gw2User, discordUser FROM userList', []).then((rows) => {
 		console.log('User List: ', rows);
+		var currentPromise = Promise.resolve({});
 		for(var i in rows) {
-			var gw2User: any[] = _.filter(members, (m: any) => m.name === rows[i].gw2User);
+			const gw2User: any[] = _.filter(members, (m: any) => m.name === rows[i].gw2User);
 			if (gw2User.length > 0) {
 				console.log('Gw2User:', gw2User);
-				var userRoles = server.rolesOfUser(rows[i].discordUser);
-				var addRole = _.filter(server.roles, (r: any) => r.name === gw2User[0].rank);
-				var verifiedRole = _.filter(server.roles, (r: any) => r.name === 'Verified');
+				const member = server.member(rows[i].discordUser);
+				const userRoles = member.roles.array();
+				const addRole = _.filter(server.roles, (r: any) => r.name === gw2User[0].rank);
+				const verifiedRole = _.filter(server.roles, (r: any) => r.name === 'Verified');
 
 				const discordId = rows[i].discordUser;
 				const rank = gw2User[0].rank;
 
-				for (var j in userRoles) {
+				for (const j in userRoles) {
 					if (
 						_.includes(ranks, userRoles[j].name) && userRoles[j].name !== rank &&
 						(userRoles[j].name !== 'Verified' || !rank)
 					) {
-						var roleName = userRoles[j].name;
+						const roleName = userRoles[j].name;
 						console.log('Removing', roleName, 'from', discordId);
-						bot.removeMemberFromRole(rows[i].discordUser, userRoles[j], (err) => {
-							if(err && err.response.statusCode) {
-								console.error('Failed to remove', discordId , 'from', roleName, err.response.text);
-							}
-						});
+						delete userRoles[j];
 					}
 				}
 
 				if(rank) {
 					console.log('Adding', rank, 'to', discordId, 'for', gw2User);
-					bot.addMemberToRole(rows[i].discordUser, addRole, (err) => {
-						if (err && err.response.statusCode) {
-							console.error('Failed to add', discordId, 'to', rank, err.response.text);
-						}
-						console.log('Adding verified to', discordId, 'for', gw2User);
-						bot.addMemberToRole(rows[i].discordUser, verifiedRole, (err) => {
-							if (err && err.response.statusCode) {
-								console.error('Failed to add', discordId, 'to verified', err.response.text);
-							}
-						});
-					});
+					userRoles.push(addRole);
 				}
+
+				currentPromise = currentPromise.then(() => {
+					console.log('Saving roles for ', discordId, '/', gw2User);
+					return server.member(rows[i].discordUser).setRoles(member);
+				});
 			}
 		}
 	});
