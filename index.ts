@@ -1,4 +1,5 @@
 /// <reference path="node_modules/@types/es6-promise/index.d.ts"/>
+require('source-map-support').install();
 import * as yargs from 'yargs';
 import * as _ from 'lodash';
 import * as path from 'path';

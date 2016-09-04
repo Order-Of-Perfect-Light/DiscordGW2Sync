@@ -24,13 +24,13 @@ export function roll(bot: any, message, content, randomKey) {
 						final.push(i + 'x' + rollData[i].length);
 					}
 				}
-				bot.reply(message, final.join(', '));
+				message.reply(final.join(', '));
 			} else {
-				bot.reply(message, result.random.data.join(', '));
+				message.reply(result.random.data.join(', '));
 			}
 		})
 		.catch((e) => {
 			console.error('Failed to roll numbers', e);
-			bot.reply(message, 'Quaggan failed, Quaggan is sorry!');
+			message.reply('Quaggan failed, Quaggan is sorry!');
 		});
 }

@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
-import * as motdPull from './timedActions/motdPull';
-import * as upgradesPull from './timedActions/upgradesPull';
+import {initTimers} from './timedActions';
 
 const process: any = require('process');
 const discord: any = require('discord.js');
@@ -11,8 +10,6 @@ import {updatePermissions} from './actions/updatePermissions';
 import {roll} from './actions/roll';
 
 export const discordConnections = [
-	new discord.Client(),
-	new discord.Client(),
 	new discord.Client()
 ];
 
@@ -28,11 +25,14 @@ function exitHandler(options, err) {
 		logout = false;
 		console.log('Logging out');
 		for(const i in discordConnections) {
-			discordConnections[i].logout(() => {
-				console.log('Done!');
-				setTimeout(process.exit.bind(process), 1000);
-			});
+			try {
+				discordConnections[i].logout(() => {
+					console.log('Done!');
+					setTimeout(process.exit.bind(process), 1000);
+				});
+			} catch (e) { /* */ }
 		}
+		setTimeout(process.exit.bind(process), 1000);
 	}
 }
 
@@ -51,26 +51,24 @@ export function init(displayName: string, randomKey: string, email: string, pass
 	discordConnections[0].on('ready', function() {
 		if(initialize) {
 			initialize = false;
-			discordConnections[0].setStatusIdle();
+			discordConnections[0].user.setStatus('idle');
 
-			officialChannel = _.filter(discordConnections[0].servers[0].channels, (c: any) => (
-				c.name === 'official' &&
-				c.type === 'text'
-			))[0];
-
-			motdPull.start();
-			upgradesPull.start();
+			officialChannel = _.filter(
+				discordConnections[0].guilds.first().channels.array(),
+				(c: any) => (
+					c.name === 'official' &&
+					c.type === 'text'
+				)
+			)[0];
 
 			Promise.all([
-				discordConnections[0].setUsername(displayName)
+				discordConnections[0].user.setUsername(displayName)
 					.catch((e) => console.error('Set Username Fail!', e && e.stack || e)),
-				discordConnections[0].setPlayingGame('CoooOOOooOOOoo Beep Boop CoooooOOOOoooOOOoo')
-					.catch((e) => console.error('Set Playing Fail!', e && e.stack || e))
-			]).then(() =>
-				discordConnections[0].setStatusActive()
-					.catch((e) => console.error('Set Active Fail!', e && e.stack || e))
-			).then(() => {
-				console.log('Discord init complete')
+				discordConnections[0].user.setStatus('idle', 'Initializing....')
+					.catch((e) => console.error('Set Status Fail!', e && e.stack || e))
+			]).then(() => {
+				initTimers();
+				console.log('Discord init complete');
 			});
 		}
 	});
@@ -104,8 +102,7 @@ function initBot(bot: any, randomKey: string, displayName: string, email: string
 				var content = content.replace('<@' + filtered[0].id + '>', '').trim();
 			}
 			if(content === 'help') {
-				bot.reply(
-					message,
+				message.reply(
 					'\nQuaggan understands these commands:\n' +
 					'* login <Guildwars2 username with numbers> — logs youuuUUUuuu into the system\n' +
 					'* updatePermissions — updates discord permissions for youuuUUUuuu\n' +
@@ -118,7 +115,7 @@ function initBot(bot: any, randomKey: string, displayName: string, email: string
 			} else if (content.startsWith('roll ')) {
 				roll(bot, message, content, randomKey);
 			} else {
-				bot.reply(message, 'Quaggan does not understand.... CoooOOOOoooooo');
+				message.reply('Quaggan does not understand.... CoooOOOOoooooo');
 			}
 		}
 	});
@@ -149,7 +146,7 @@ function initBot(bot: any, randomKey: string, displayName: string, email: string
 export function processGw2Members(bot: any, members) {
 	var ranks = _(members).map('rank').sort().uniq().value();
 	ranks.push('Verified');
-	var server = bot.servers[0];
+	var server = bot.guilds.first();
 	console.log('Getting users');
 	return db.get('SELECT gw2User, discordUser FROM userList', []).then((rows) => {
 		console.log('User List: ', rows);
@@ -199,11 +196,10 @@ export function processGw2Members(bot: any, members) {
 }
 
 export function getMessage(bot, title) {
-	var server = bot.servers[0];
+	var server = bot.guilds.first();
 
-	return officialChannel.getLogs().then((messages: any) => {
-		const resultMessage: any = _.filter(messages, (m: any) => m.content.startsWith('**' + title + '**'));
-		console.log(resultMessage.author && resultMessage.author.id, server.user);
+	return officialChannel.fetchMessages().then((messages: any) => {
+		const resultMessage: any = _.filter(messages.array(), (m: any) => m.content.startsWith('**' + title + '**'));
 		if(resultMessage.length > 0) {
 			return resultMessage[0];
 		} else {

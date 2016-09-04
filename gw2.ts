@@ -1,6 +1,5 @@
 import * as request from 'request';
-import * as motdPull from './timedActions/motdPull';
-import * as upgradesPull from './timedActions/upgradesPull';
+import {initTimers} from './timedActions';
 
 let key: string;
 let guildId: string;
@@ -18,8 +17,7 @@ export function init(apiKey: string, guildNumber: number) {
 	key = apiKey;
 	getRequest(baseUrl + account).then((result: any) => {
 		guildId = result.guilds[guildNumber];
-		motdPull.start();
-		upgradesPull.start();
+		initTimers();
 		console.log('GW2 Initialized with guild id', guildId);
 	}).catch((e) => {
 		console.error('Could not fetch guild list!', e);

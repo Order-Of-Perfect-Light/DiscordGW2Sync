@@ -25,28 +25,11 @@ function leftPad(str, pad, len) {
 }
 
 export function start() {
-	startCount++;
-	if (startCount === 2) {
-		discord.getMessage(discord.discordConnections[0], title).then((channel: any) => {
-			upgradesMessage = channel;
-			run();
-			setInterval(run, 1000 * 60 * 60);
-		}).catch((e) => console.error('Failed to find ' + title, e && e.stack || e));
-		/*upgradesList = gw2.getUpgradeList().then((data: number[]) => {
-		 const promises: Promise<any[]>[] = [];
-		 const batchSize = Math.ceil(data.length / 6);
-		 for (var i = 0; i < data.length; i += batchSize) {
-		 promises.push(gw2.getUpgradeList(data.splice(i, batchSize).join(',')));
-		 }
-		 return Promise.all(promises).then((results: any[][]) => {
-		 const list = [].concat(results);
-		 const retVal = {};
-		 for(var i in list) {
-		 retVal[list[i].id] = retVal;
-		 }
-		 });
-		 });*/
-	}
+	discord.getMessage(discord.discordConnections[0], title).then((channel: any) => {
+		upgradesMessage = channel;
+		run();
+		setInterval(run, 1000 * 60 * 60);
+	}).catch((e) => console.error('Failed to find ' + title, e && e.stack || e));
 }
 
 function run() {
@@ -72,7 +55,7 @@ function run() {
 					leftPad(
 						need.toString(),
 						' ',
-						4,
+						4
 					) + ' (' +
 					leftPad(
 						(Math.floor((count/need) * 1000)/10).toFixed(1),
@@ -82,7 +65,7 @@ function run() {
 			}
 		}
 
-		upgradesMessage.update(
+		upgradesMessage.edit(
 			'**' + title + '**\n' +
 			'__Needed items for guild hall upgrades__\n```' +
 			needs.join('\n') + '```\n' +

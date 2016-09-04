@@ -9,10 +9,10 @@ export function login(bot: any, message, content) {
 	gw2.getMembers().then((memberList) => {
 		var user = _.filter(memberList, (item: any) => item.name === gw2User);
 		if(user.length !== 1) {
-			bot.reply(message, 'Quaggan doesn\'t recognize youuuUUUuuu');
+			message.reply('Quaggan doesn\'t recognize youuuUUUuuu');
 		} else {
 			var copper = Math.floor(Math.random() * 50);
-			bot.reply(message, 'Quaggan thinks that youuuUUUuuu should deposit ' + copper + ' copper coins to the guild stash soooOOOoooon');
+			message.reply('Quaggan thinks that youuuUUUuuu should deposit ' + copper + ' copper coins to the guild stash soooOOOoooon');
 			return waitForCopper(gw2User, copper)
 				.then(() => db.get('SELECT id FROM userList WHERE discordUser = ?', [message.author.id]))
 				.then((rows: any[]) => {
@@ -23,11 +23,11 @@ export function login(bot: any, message, content) {
 					}
 				}).then(() => {
 					discord.processGw2Members(bot, memberList);
-					bot.reply(message, 'YouuuUUUuuu are logged in!');
+					message.reply('YouuuUUUuuu are logged in!');
 				});
 		}
 	}).catch((err) => {
-		bot.reply(message, 'Quaggan could not log youuuUUUuuu in. Quaggan is sorry!');
+		message.reply('Quaggan could not log youuuUUUuuu in. Quaggan is sorry!');
 		console.log('Failed to login!', {
 			discordId: message.author.id,
 			gw2User: gw2User,
